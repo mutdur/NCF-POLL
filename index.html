@@ -1,166 +1,201 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Poll Percentage to Real Votes</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+<meta charset="UTF-8">
+<title>NCF Poll Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #4e73df, #1cc88a);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+<style>
+:root {
+    --primary: #6366f1;
+    --danger: #ef4444;
+    --bg: #0f172a;
+    --card: rgba(255,255,255,0.1);
+    --border: rgba(255,255,255,0.2);
+    --text: #e5e7eb;
+}
 
-        .container {
-            background: #ffffff;
-            width: 95%;
-            max-width: 700px;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
+* {
+    box-sizing: border-box;
+    font-family: "Inter", system-ui, sans-serif;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1e293b, #020617);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+}
 
-        label {
-            font-weight: bold;
-        }
+/* Main Card */
+.app {
+    width: 95%;
+    max-width: 750px;
+    background: var(--card);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+}
 
-        #totalVotes {
-            width: 150px;
-            padding: 8px;
-            margin-left: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
+.app h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
 
-        h3 {
-            margin-top: 25px;
-            color: #444;
-        }
+/* Total votes */
+.total-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+}
 
-        .poll-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding: 8px;
-            background: #f8f9fc;
-            border-radius: 8px;
-        }
+.total-box label {
+    font-weight: 600;
+}
 
-        .poll-row input[type="number"] {
-            width: 100px;
-            padding: 6px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
+.total-box input {
+    width: 140px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 15px;
+}
 
-        .result {
-            font-weight: bold;
-            color: #2e59d9;
-            min-width: 90px;
-        }
+/* Poll rows */
+.poll-row {
+    display: grid;
+    grid-template-columns: auto 120px auto auto;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.08);
+    padding: 12px 14px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+}
 
-        button {
-            padding: 7px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
+.poll-row input {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 14px;
+}
 
-        .add-btn {
-            margin-top: 15px;
-            background: #1cc88a;
-            color: white;
-        }
+.result {
+    font-weight: 600;
+    color: #a5b4fc;
+    min-width: 120px;
+}
 
-        .add-btn:hover {
-            background: #17a673;
-        }
+/* Buttons */
+button {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.15s, opacity 0.15s;
+}
 
-        .delete-btn {
-            background: #e74a3b;
-            color: white;
-        }
+button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
 
-        .delete-btn:hover {
-            background: #c0392b;
-        }
-    </style>
+.add-btn {
+    margin-top: 16px;
+    background: var(--primary);
+    color: white;
+}
+
+.delete-btn {
+    background: var(--danger);
+    color: white;
+}
+
+/* Footer note */
+.note {
+    margin-top: 18px;
+    font-size: 13px;
+    opacity: 0.75;
+    text-align: center;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Poll Percentage to Real Votes</h2>
+<div class="app">
+    <h1>NCF Poll Calculator</h1>
 
-    <div>
-        <label>Total Votes:</label>
-        <input type="number" id="totalVotes" value="1000" min="1" oninput="calculateAll()">
+    <div class="total-box">
+        <label>Total Votes</label>
+        <input type="number" id="totalVotes" value="100" min="1" oninput="calculateAll()">
     </div>
-
-    <h3>Polls</h3>
 
     <div id="polls">
         <div class="poll-row">
-            <span>Poll 1 %:</span>
+            <span>Poll 1 (%)</span>
             <input type="number" class="percent" value="0" min="0" max="100" oninput="calculateAll()">
-            <span class="result">= 0 votes</span>
+            <span class="result">= 0.00 points</span>
             <button class="delete-btn" onclick="deletePoll(this)">Delete</button>
         </div>
     </div>
 
-    <button class="add-btn" onclick="addPoll()">Add Poll</button>
+    <button class="add-btn" onclick="addPoll()">+ Add Poll</button>
+
+    <div class="note">
+        ⚠ Total points equal total votes only if percentages sum to 100%
+    </div>
 </div>
 
 <script>
 function calculateAll() {
-    let total = parseFloat(document.getElementById("totalVotes").value) || 0;
-    let percents = document.getElementsByClassName("percent");
-    let results = document.getElementsByClassName("result");
+    const total = parseFloat(document.getElementById("totalVotes").value) || 0;
+    const percents = document.getElementsByClassName("percent");
+    const results = document.getElementsByClassName("result");
 
     for (let i = 0; i < percents.length; i++) {
-        let p = parseFloat(percents[i].value) || 0;
-        let realNumber = (p / 100) * total;
-        results[i].innerText = "= " + Math.round(realNumber) + " votes";
+        const p = parseFloat(percents[i].value) || 0;
+        const value = (p / 100) * total;
+        results[i].innerText = "= " + value.toFixed(2) + " points";
     }
 }
 
 function addPoll() {
-    let container = document.getElementById("polls");
-    let count = container.children.length + 1;
+    const container = document.getElementById("polls");
+    const count = container.children.length + 1;
 
-    let div = document.createElement("div");
-    div.className = "poll-row";
-    div.innerHTML = `
-        <span>Poll ${count} %:</span>
+    const row = document.createElement("div");
+    row.className = "poll-row";
+    row.innerHTML = `
+        <span>Poll ${count} (%)</span>
         <input type="number" class="percent" value="0" min="0" max="100" oninput="calculateAll()">
-        <span class="result">= 0 votes</span>
+        <span class="result">= 0.00 points</span>
         <button class="delete-btn" onclick="deletePoll(this)">Delete</button>
     `;
-    container.appendChild(div);
+
+    container.appendChild(row);
 }
 
-function deletePoll(button) {
-    let container = document.getElementById("polls");
-    button.parentElement.remove();
+function deletePoll(btn) {
+    const container = document.getElementById("polls");
+    btn.parentElement.remove();
 
     // Renumber polls
-    let rows = container.getElementsByClassName("poll-row");
+    const rows = container.getElementsByClassName("poll-row");
     for (let i = 0; i < rows.length; i++) {
-        rows[i].children[0].innerText = "Poll " + (i + 1) + " %:";
+        rows[i].children[0].innerText = "Poll " + (i + 1) + " (%)";
     }
 
     calculateAll();
