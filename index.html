@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Poll Percentage to Real Votes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4e73df, #1cc88a);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 95%;
+            max-width: 700px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        #totalVotes {
+            width: 150px;
+            padding: 8px;
+            margin-left: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        h3 {
+            margin-top: 25px;
+            color: #444;
+        }
+
+        .poll-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fc;
+            border-radius: 8px;
+        }
+
+        .poll-row input[type="number"] {
+            width: 100px;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .result {
+            font-weight: bold;
+            color: #2e59d9;
+            min-width: 90px;
+        }
+
+        button {
+            padding: 7px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .add-btn {
+            margin-top: 15px;
+            background: #1cc88a;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #17a673;
+        }
+
+        .delete-btn {
+            background: #e74a3b;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Poll Percentage to Real Votes</h2>
+
+    <div>
+        <label>Total Votes:</label>
+        <input type="number" id="totalVotes" value="1000" min="1" oninput="calculateAll()">
+    </div>
+
+    <h3>Polls</h3>
+
+    <div id="polls">
+        <div class="poll-row">
+            <span>Poll 1 %:</span>
+            <input type="number" class="percent" value="0" min="0" max="100" oninput="calculateAll()">
+            <span class="result">= 0 votes</span>
+            <button class="delete-btn" onclick="deletePoll(this)">Delete</button>
+        </div>
+    </div>
+
+    <button class="add-btn" onclick="addPoll()">Add Poll</button>
+</div>
+
+<script>
+function calculateAll() {
+    let total = parseFloat(document.getElementById("totalVotes").value) || 0;
+    let percents = document.getElementsByClassName("percent");
+    let results = document.getElementsByClassName("result");
+
+    for (let i = 0; i < percents.length; i++) {
+        let p = parseFloat(percents[i].value) || 0;
+        let realNumber = (p / 100) * total;
+        results[i].innerText = "= " + Math.round(realNumber) + " votes";
+    }
+}
+
+function addPoll() {
+    let container = document.getElementById("polls");
+    let count = container.children.length + 1;
+
+    let div = document.createElement("div");
+    div.className = "poll-row";
+    div.innerHTML = `
+        <span>Poll ${count} %:</span>
+        <input type="number" class="percent" value="0" min="0" max="100" oninput="calculateAll()">
+        <span class="result">= 0 votes</span>
+        <button class="delete-btn" onclick="deletePoll(this)">Delete</button>
+    `;
+    container.appendChild(div);
+}
+
+function deletePoll(button) {
+    let container = document.getElementById("polls");
+    button.parentElement.remove();
+
+    // Renumber polls
+    let rows = container.getElementsByClassName("poll-row");
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].children[0].innerText = "Poll " + (i + 1) + " %:";
+    }
+
+    calculateAll();
+}
+</script>
+
+</body>
+</html>
